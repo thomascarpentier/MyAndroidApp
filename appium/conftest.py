@@ -3,9 +3,7 @@ import pytest
 
 
 def pytest_addoption(parser):
-    parser.addoption(
-        "--apk", action="store", default="", help="full path of apk"
-    )
+    parser.addoption("--apk", action="store", default="", help="full path of apk")
 
 
 @pytest.fixture
