@@ -6,7 +6,6 @@ from appium import webdriver
 @pytest.mark.parametrize("udid, systemPort", [
        ("localhost:4321", "8201"),
        ("localhost:4322", "8202"),
-       ("localhost:4323", "8203"),
        ]
 )
 def test_send_message(udid, systemPort, getAPKPath):
