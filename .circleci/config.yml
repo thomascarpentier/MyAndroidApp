@@ -12,7 +12,7 @@ jobs:
           password: "${GMCLOUD_SAAS_PASSWORD}"
       - genymotion-saas/start-instance:
           recipe_uuid: "f34de94f-1e85-4d61-9b0d-c47968bc156c"
-          adb_serial_port: "12345"
+          adb_serial_port: "12346"
       - genymotion-saas/stop-instance
   test-without-adb:
     executor: genymotion-saas/default
