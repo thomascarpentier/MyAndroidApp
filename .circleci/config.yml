@@ -4,7 +4,7 @@ orbs:
   genymotion-saas: genymotion/genymotion-saas@dev:alpha
 
 jobs:
-  build:
+  test-with-adb:
     executor: genymotion-saas/default
     steps:
       - genymotion-saas/setup:
@@ -12,9 +12,21 @@ jobs:
           password: "${GMCLOUD_SAAS_PASSWORD}"
       - genymotion-saas/start-instance:
           recipe_uuid: "f34de94f-1e85-4d61-9b0d-c47968bc156c"
-      - genymotion-saas/connect:
-          instance_uuid: "$INSTANCE_UUID"
           adb_serial_port: "12345"
+      - genymotion-saas/stop-instance
+  test-without-adb:
+    executor: genymotion-saas/default
+    steps:
+      - genymotion-saas/setup:
+          email: "${GMCLOUD_SAAS_EMAIL}"
+          password: "${GMCLOUD_SAAS_PASSWORD}"
+      - genymotion-saas/start-instance:
+          recipe_uuid: "f34de94f-1e85-4d61-9b0d-c47968bc156c"
+      - genymotion-saas/stop-instance
 
-      - genymotion-saas/stop-instance:
-          instance_uuid: "$INSTANCE_UUID"
+workflows:
+  version: 2
+  build:
+    jobs:
+      - "test-without-adb"
+      - "test-with-adb"
