@@ -13,13 +13,15 @@ jobs:
       - genymotion-saas/start-instance:
           recipe_uuid: "fb936099-d261-4dd3-8dec-3fc14f1d0f03"
           adb_serial_port: "12346"
-      # run tests  against the emulator
-      - ./gradlew connectedAndroidTest
+      - run:
+          name: Run EspressoTests
+          command: ./gradlew connectedAndroidTest
       - genymotion-saas/stop-instance
-      # copy the build outputs to artifacts
-      - cp -r app/build/outputs $CIRCLE_ARTIFACTS
-      # copy the test results to the test results directory.
-      - cp -r app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
+      - store_artifacts:
+          path: app/build/reports
+          destination: reports
+      - store_test_results:
+          path: app/build/test-results
   android8:
     executor: genymotion-saas/default
     steps:
@@ -29,13 +31,15 @@ jobs:
       - genymotion-saas/start-instance:
           recipe_uuid: "c52fdfc2-6914-4266-aa6e-50258f50ef91"
           adb_serial_port: "12345"
-      # run tests  against the emulator
-      - ./gradlew connectedAndroidTest
+      - run:
+          name: Run EspressoTests
+          command: ./gradlew connectedAndroidTest
       - genymotion-saas/stop-instance
-      # copy the build outputs to artifacts
-      - cp -r app/build/outputs $CIRCLE_ARTIFACTS
-      # copy the test results to the test results directory.
-      - cp -r app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPOR
+      - store_artifacts:
+          path: app/build/reports
+          destination: reports
+      - store_test_results:
+          path: app/build/test-results
 
 workflows:
   version: 2
