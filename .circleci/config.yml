@@ -9,4 +9,4 @@ workflows:
     jobs:
       - genymotion-saas/run:
           steps:
-            - run: ./gradlew connectedDebugAndroidTest
+            - run: adb devices && gmsaas instances list && ./gradlew connectedDebugAndroidTest
