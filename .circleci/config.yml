@@ -4,7 +4,7 @@ orbs:
   genymotion-saas: genymotion/genymotion-saas@dev:alpha
 
 jobs:
-  build:
+  android8:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-29-node
@@ -27,20 +27,13 @@ jobs:
           paths:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Adb devices
-          command: adb devices
-      - genymotion-saas/setup:
-          email: "${GMCLOUD_SAAS_EMAIL}"
-          password: "${GMCLOUD_SAAS_PASSWORD}"
+      - genymotion-saas/setup
       - genymotion-saas/start-instance:
           recipe_uuid: "fb936099-d261-4dd3-8dec-3fc14f1d0f03"
-          adb_serial_port: "12346"
-      - run: adb devices
       - run:
           name: Run Expresso Android Tests
           command: |
-            gmsaas instances adbconnect $INSTANCE_UUID --adb-serial-port 12346
+            gmsaas instances list
             ./gradlew :app:connectedDebugAndroidTest -PdisablePreDex
       - genymotion-saas/stop-instance
       - store_artifacts:
@@ -48,18 +41,38 @@ jobs:
           destination: reports
       - store_test_results:
           path: app/build/test-results
-  android8:
-    executor: genymotion-saas/default
+  android9:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-29-node
+    environment:
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false"
     steps:
-      - genymotion-saas/setup:
-          email: "${GMCLOUD_SAAS_EMAIL}"
-          password: "${GMCLOUD_SAAS_PASSWORD}"
-      - genymotion-saas/start-instance:
-          recipe_uuid: "c52fdfc2-6914-4266-aa6e-50258f50ef91"
-          adb_serial_port: "12345"
+      - checkout
       - run:
-          name: Run EspressoTests
-          command: gradlew connectedAndroidTest
+          name: Accept all SDK package licenses
+          command: |
+            yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses || if [ $? -ne '141' ]; then exit $?; fi;
+      - restore_cache:
+            key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies -PdisablePreDex
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - genymotion-saas/setup
+      - genymotion-saas/start-instance:
+          recipe_uuid: "fb936099-d261-4dd3-8dec-3fc14f1d0f03"
+          adb_serial_port: 12345
+      - run:
+          name: Run Expresso Android Tests
+          command: |
+            gmsaas instances list
+            ./gradlew :app:connectedDebugAndroidTest -PdisablePreDex
       - genymotion-saas/stop-instance
       - store_artifacts:
           path: app/build/reports
@@ -71,5 +84,5 @@ workflows:
   version: 2
   build:
     jobs:
-      - "build"
       - "android8"
+      - "android9"
