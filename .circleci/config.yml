@@ -1,0 +1,122 @@
+version: 2.1
+
+orbs:
+  genymotion-saas: genymotion/genymotion-saas@1.0.0
+
+defaults: &defaults
+  executor: genymotion-saas/default
+  working_directory: ~/code
+  environment:
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false"
+
+general:
+  artifacts:
+    - "app/build/reports/androidTests/connected"
+
+aliases:
+  - &step_attach_workspace
+    attach_workspace:
+      at: .
+  
+  - &step_run_tests
+    run:
+      name: Run Expresso Android Tests
+      command: |
+        ./gradlew :app:connectedDebugAndroidTest -PdisablePreDex
+  
+  - &save_results
+    store_artifacts:
+      path: app/build/reports
+      destination: reports
+
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Accept all SDK package licenses
+          command: |
+            yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses || if [ $? -ne '141' ]; then exit $?; fi;
+      - restore_cache:
+            key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies -PdisablePreDex
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .gradle
+
+  android8:
+    <<: *defaults
+    steps:
+      - checkout
+      - *step_attach_workspace
+      - genymotion-saas/setup
+      - genymotion-saas/start-instance:
+          recipe_uuid: "c52fdfc2-6914-4266-aa6e-50258f50ef91"
+      - *step_run_tests
+      - genymotion-saas/stop-instance
+      - *save_results
+  
+  android81:
+    <<: *defaults
+    steps:
+      - checkout
+      - *step_attach_workspace
+      - genymotion-saas/setup
+      - genymotion-saas/start-instance:
+          recipe_uuid: "20ee73af-5c32-405c-8582-cd19ffd175c2"
+      - *step_run_tests
+      - genymotion-saas/stop-instance
+      - *save_results
+  
+  android9:
+    <<: *defaults
+    steps:
+      - checkout
+      - *step_attach_workspace
+      - genymotion-saas/setup
+      - genymotion-saas/start-instance:
+          recipe_uuid: "e20da1a3-313c-434a-9d43-7268b12fee08"
+      - *step_run_tests
+      - genymotion-saas/stop-instance
+      - *save_results
+  
+  android10:
+    <<: *defaults
+    steps:
+      - checkout
+      - *step_attach_workspace
+      - genymotion-saas/setup
+      - genymotion-saas/start-instance:
+          recipe_uuid: "70eaaf75-bd9a-406d-9f01-682a5d400c6e"
+      - *step_run_tests
+      - genymotion-saas/stop-instance
+      - *save_results
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - android8:
+          requires:
+          - build
+      - android81:
+          requires:
+          - build
+      - android9:
+          requires:
+          - build
+      - android10:
+          requires:
+          - build
