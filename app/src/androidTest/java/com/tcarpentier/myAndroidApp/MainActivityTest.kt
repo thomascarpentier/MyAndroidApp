@@ -43,11 +43,11 @@ class MainActivityTest {
             )
         )
         appCompatEditText.perform(click())
-        appCompatEditText.perform(replaceText("This is a test!"))
+        appCompatEditText.perform(replaceText("Bonjour MoT Paris, Lyon, Rennes, Lille!"))
 
         val appCompatEditText5 = onView(
             allOf(
-                withId(R.id.editText), withText("This is a test!"),
+                withId(R.id.editText), withText("Bonjour MoT Paris, Lyon, Rennes, Lille!"),
                 childAtPosition(
                     childAtPosition(
                         withId(android.R.id.content),
@@ -77,7 +77,7 @@ class MainActivityTest {
 
         val editText = onView(
             allOf(
-                withId(R.id.editText), withText("This is a test!"),
+                withId(R.id.editText), withText("Bonjour MoT Paris, Lyon, Rennes, Lille!"),
                 childAtPosition(
                     childAtPosition(
                         withId(android.R.id.content),
@@ -107,7 +107,7 @@ class MainActivityTest {
 
         val textView = onView(
             allOf(
-                withId(R.id.textView), withText("This is a test!"),
+                withId(R.id.textView), withText("Bonjour MoT Paris, Lyon, Rennes, Lille!"),
                 childAtPosition(
                     childAtPosition(
                         withId(android.R.id.content),
@@ -118,7 +118,8 @@ class MainActivityTest {
                 isDisplayed()
             )
         )
-        textView.check(matches(withText("This is a test!")))
+        textView.check(matches(withText("Bonjour MoT Paris, Lyon, Rennes, Lille!")))
+        Thread.sleep(2000);
     }
 
     private fun childAtPosition(
