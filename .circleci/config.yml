@@ -1,10 +1,16 @@
 version: 2.1
-
 orbs:
   genymotion-saas: genymotion/genymotion-saas@1.0.0
 
+workflows:
+  build:
+    jobs:
+      - build:
+          post-steps:
+            - genymotion-saas/stop-instance
+
 jobs:
-  android9:
+  build:
     executor: genymotion-saas/default
     steps:
       - checkout
@@ -12,20 +18,3 @@ jobs:
       - genymotion-saas/start-instance:
           recipe_uuid: "e20da1a3-313c-434a-9d43-7268b12fee08"
       - run: ./gradlew connectedDebugAndroidTest
-      - genymotion-saas/stop-instance
-  android10:
-    executor: genymotion-saas/default
-    steps:
-      - checkout
-      - genymotion-saas/setup
-      - genymotion-saas/start-instance:
-          recipe_uuid: "70eaaf75-bd9a-406d-9f01-682a5d400c6e"
-      - run: ./gradlew connectedDebugAndroidTest 
-      - genymotion-saas/stop-instance
-
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - android9
-      - android10
