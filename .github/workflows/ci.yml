@@ -1,0 +1,39 @@
+on: [push]
+
+jobs:
+  Espresso:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        recipe_uuid:
+          - ea5fda48-fa8b-48c1-8acc-07d910856141 # android 8.1
+
+    name: Run Espresso Tests
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.9.1"
+          architecture: "x64"
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Genymotion
+        uses: genymobile/genymotion-saas-github-action@integration/SAAS-1612-github-action
+        with:
+          email: ${{ secrets.GMSAAS_EMAIL }}
+          password: ${{ secrets.GMSAAS_PASSWORD }}
+          recipe_uuid: ${{ matrix.recipe_uuid }}
+      
+      - name: Run Espresso Tests
+        run: ./gradlew cAT
+
+
