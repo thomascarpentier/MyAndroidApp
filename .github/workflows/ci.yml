@@ -27,7 +27,7 @@ jobs:
         uses: android-actions/setup-android@v2
 
       - name: Genymotion
-        uses: genymobile/genymotion-saas-github-action@integration/SAAS-1612-github-action
+        uses: genymobile/genymotion-saas-github-action@v0.1
         with:
           email: ${{ secrets.GMSAAS_EMAIL }}
           password: ${{ secrets.GMSAAS_PASSWORD }}
