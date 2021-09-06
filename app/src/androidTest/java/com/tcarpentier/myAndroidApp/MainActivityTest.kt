@@ -28,7 +28,7 @@ class MainActivityTest {
     var mActivityTestRule = ActivityTestRule(MainActivity::class.java)
 
     @Test
-    fun mainActivityTest() {
+    fun sendMessageTest() {
         val appCompatEditText = onView(
             allOf(
                 withId(R.id.editText), withText("Enter a message"),
@@ -43,11 +43,11 @@ class MainActivityTest {
             )
         )
         appCompatEditText.perform(click())
-        appCompatEditText.perform(replaceText("This is a test!"))
+        appCompatEditText.perform(replaceText("Hello TestCon 2021!"))
 
         val appCompatEditText5 = onView(
             allOf(
-                withId(R.id.editText), withText("This is a test!"),
+                withId(R.id.editText), withText("Hello TestCon 2021!"),
                 childAtPosition(
                     childAtPosition(
                         withId(android.R.id.content),
@@ -77,7 +77,7 @@ class MainActivityTest {
 
         val editText = onView(
             allOf(
-                withId(R.id.editText), withText("This is a test!"),
+                withId(R.id.editText), withText("Hello TestCon 2021!"),
                 childAtPosition(
                     childAtPosition(
                         withId(android.R.id.content),
@@ -107,7 +107,7 @@ class MainActivityTest {
 
         val textView = onView(
             allOf(
-                withId(R.id.textView), withText("This is a test!"),
+                withId(R.id.textView), withText("Hello TestCon 2021!"),
                 childAtPosition(
                     childAtPosition(
                         withId(android.R.id.content),
@@ -118,7 +118,98 @@ class MainActivityTest {
                 isDisplayed()
             )
         )
-        textView.check(matches(withText("This is a test!")))
+        textView.check(matches(withText("Hello TestCon 2021!")))
+
+
+        Thread.sleep(2_000)
+    }
+
+    @Test
+    fun CheckImageTest() {
+        val appCompatEditText = onView(
+            allOf(
+                withId(R.id.editText), withText("Enter a message"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(android.R.id.content),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatEditText.perform(click())
+        appCompatEditText.perform(replaceText("Hello TestCon 2021!"))
+
+        val appCompatEditText5 = onView(
+            allOf(
+                withId(R.id.editText), withText("Hello TestCon 2021!"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(android.R.id.content),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatEditText5.perform(closeSoftKeyboard())
+
+        val button = onView(
+            allOf(
+                withId(R.id.button),
+                childAtPosition(
+                    childAtPosition(
+                        withId(android.R.id.content),
+                        0
+                    ),
+                    1
+                ),
+                isDisplayed()
+            )
+        )
+        button.check(matches(isDisplayed()))
+
+        val editText = onView(
+            allOf(
+                withId(R.id.editText), withText("Hello TestCon 2021!"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(android.R.id.content),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        editText.check(matches(isDisplayed()))
+
+        val appCompatButton = onView(
+            allOf(
+                withId(R.id.button), withText("Send"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(android.R.id.content),
+                        0
+                    ),
+                    1
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatButton.perform(click())
+
+
+        val imageView = onView(
+            allOf(withId(R.id.imageView),
+                withParent(withParent(withId(android.R.id.content))),
+                isDisplayed()))
+        imageView.check(matches(isDisplayed()))
+
+        Thread.sleep(2_000)
     }
 
     private fun childAtPosition(

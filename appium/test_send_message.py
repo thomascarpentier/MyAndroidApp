@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 import pytest
 from appium import webdriver
+import time
 
 
 @pytest.mark.parametrize(
-    "udid, systemPort", [("localhost:4321", "8201"), ("localhost:4322", "8202"),]
+    "udid, systemPort", [
+        ("localhost:4321", "8201"),
+        ("localhost:4322", "8202"),
+        ("localhost:4323", "8203"),
+        ("localhost:4324", "8204"),
+        ]
 )
 def test_send_message(udid, systemPort, getAPKPath):
 
@@ -24,7 +30,7 @@ def test_send_message(udid, systemPort, getAPKPath):
         'new UiSelector().resourceId("com.tcarpentier.myAndroidApp:id/editText")'
     )
     txt_ipt.clear()
-    txt_ipt.send_keys("It's a trap!")
+    txt_ipt.send_keys("Hello TestCon 2021!")
 
     send_btn = driver.find_element_by_android_uiautomator(
         'new UiSelector().resourceId("com.tcarpentier.myAndroidApp:id/button")'
@@ -34,7 +40,8 @@ def test_send_message(udid, systemPort, getAPKPath):
     current_text = driver.find_element_by_android_uiautomator(
         'new UiSelector().resourceId("com.tcarpentier.myAndroidApp:id/textView")'
     )
-    assert current_text.text == "It's a trap!"
+    assert current_text.text == "Hello TestCon 2021!"
+    time.sleep(2)
 
     driver.back()
 
