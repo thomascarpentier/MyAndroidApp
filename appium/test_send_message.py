@@ -8,8 +8,6 @@ import time
     "udid, systemPort", [
         ("localhost:4321", "8201"),
         ("localhost:4322", "8202"),
-        ("localhost:4323", "8203"),
-        ("localhost:4324", "8204"),
         ]
 )
 def test_send_message(udid, systemPort, getAPKPath):
