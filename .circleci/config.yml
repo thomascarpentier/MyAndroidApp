@@ -1,13 +1,31 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-# Use a package of configuration called an orb.
+
 orbs:
-  # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.4.1
-# Orchestrate or schedule a set of jobs
+  genymotion-saas: genymotion/genymotion-saas@1.0.0
+
+jobs:
+  android9:
+    executor: genymotion-saas/default
+    steps:
+      - checkout
+      - genymotion-saas/setup
+      - genymotion-saas/start-instance:
+          recipe_uuid: "e20da1a3-313c-434a-9d43-7268b12fee08"
+      - run: ./gradlew connectedDebugAndroidTest
+      - genymotion-saas/stop-instance
+  android10:
+    executor: genymotion-saas/default
+    steps:
+      - checkout
+      - genymotion-saas/setup
+      - genymotion-saas/start-instance:
+          recipe_uuid: "70eaaf75-bd9a-406d-9f01-682a5d400c6e"
+      - run: ./gradlew connectedDebugAndroidTest 
+      - genymotion-saas/stop-instance
+
 workflows:
-  # Name the workflow "welcome"
-  welcome:
-    # Run the welcome/run job in its own container
+  version: 2
+  build_and_test:
     jobs:
-      - welcome/run
+      - android9
+      - android10
