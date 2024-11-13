@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  genymotion-saas: genymotion/genymotion-saas@1.0.0
+  genymotion-saas: genymotion/genymotion-saas@dev:alpha
 
 jobs:
   android9:
